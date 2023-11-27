@@ -4,6 +4,7 @@ const form = document.querySelector('.feedback-form');
 const emailInput = form.querySelector('input[name="email"]');
 const messageTextarea = form.querySelector('textarea[name="message"]');
 const storageKey = 'feedback-form-state';
+
 const saveToLocalStorage = throttle(() => {
   const formData = {
     email: emailInput.value,
@@ -11,7 +12,6 @@ const saveToLocalStorage = throttle(() => {
   };
   localStorage.setItem(storageKey, JSON.stringify(formData));
 }, 500);
-
 const populateFormFields = () => {
   const savedFormData = localStorage.getItem(storageKey);
   if (savedFormData) {
@@ -22,16 +22,21 @@ const populateFormFields = () => {
 };
 const handleSubmit = event => {
   event.preventDefault();
-  const formData = {
-    email: emailInput.value,
-    message: messageTextarea.value,
-  };
-  console.log('Form Data:', formData);
-  localStorage.removeItem(storageKey);
-  emailInput.value = '';
-  messageTextarea.value = '';
+  if (emailInput.value && messageTextarea.value) {
+    const formData = {
+      email: emailInput.value,
+      message: messageTextarea.value,
+    };
+  
+    console.log('Form Data:', formData);
+    localStorage.removeItem(storageKey);
+    emailInput.value = '';
+    messageTextarea.value = '';
+  } else {
+    alert('Both email and message fields must be filled out.');
+  }
 };
+
 form.addEventListener('input', saveToLocalStorage);
 form.addEventListener('submit', handleSubmit);
-
 populateFormFields();
